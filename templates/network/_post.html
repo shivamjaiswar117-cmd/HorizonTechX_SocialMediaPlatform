@@ -1,0 +1,19 @@
+<article class="post" id="post-{{ p.pk }}">
+  <div class="head">
+    <a href="{% url 'profile' p.author.username %}">{% include "network/_avatar.html" with u=p.author %}</a>
+    <div><a class="who" href="{% url 'profile' p.author.username %}">@{{ p.author.username }}</a>
+    <span class="muted"> · {{ p.created|timesince }} ago</span></div>
+    {% if p.author_id == user.id %}
+    <form method="post" action="{% url 'post_delete' p.pk %}" class="push">{% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <button class="link muted" data-confirm="Delete this post?">Delete</button></form>
+    {% endif %}
+  </div>
+  <p class="body">{{ p.content|linebreaksbr }}</p>
+  <div class="acts">
+    {% if user.is_authenticated %}
+    <button class="like {% if p.liked %}on{% endif %}" data-url="{% url 'like_toggle' p.pk %}" aria-pressed="{{ p.liked|yesno:'true,false' }}">♥ <span class="n">{{ p.n_likes }}</span></button>
+    {% else %}<a class="like" href="{% url 'login' %}">♥ <span class="n">{{ p.n_likes }}</span></a>{% endif %}
+    <a class="cm" href="{% url 'post_detail' p.pk %}">Comments · {{ p.n_comments }}</a>
+  </div>
+</article>

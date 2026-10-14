@@ -1,0 +1,31 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf" content="{{ csrf_token }}">
+<title>{% block title %}Loop{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="{% url 'home' %}">loop</a>
+  <nav>
+    <a href="{% url 'home' %}">Home</a>
+    <a href="{% url 'people' %}">People</a>
+    {% if user.is_authenticated %}
+      <a href="{% url 'profile' user.username %}">@{{ user.username }}</a>
+      <form method="post" action="{% url 'logout' %}" class="inline">{% csrf_token %}<button class="link">Log out</button></form>
+    {% else %}
+      <a href="{% url 'login' %}">Log in</a>
+      <a class="btn small" href="{% url 'register' %}">Join</a>
+    {% endif %}
+  </nav>
+</header>
+{% if messages %}<div class="wrap">{% for m in messages %}<p class="msg {{ m.tags }}">{{ m }}</p>{% endfor %}</div>{% endif %}
+<main class="wrap">{% block content %}{% endblock %}</main>
+<script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

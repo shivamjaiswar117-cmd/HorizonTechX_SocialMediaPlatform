@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}@{{ u.username }} · Loop{% endblock %}
+{% block content %}
+<section class="pro">
+  {% include "network/_avatar.html" %}
+  <div>
+    <h1>@{{ u.username }}</h1>
+    <p>{{ u.profile.bio|default:"No bio yet." }}</p>
+    <p class="muted"><strong>{{ followers }}</strong> followers · <strong>{{ following }}</strong> following · <strong>{{ posts|length }}</strong> posts</p>
+  </div>
+  <div class="push">
+  {% if user == u %}<a class="btn small" href="{% url 'edit_profile' %}">Edit profile</a>
+  {% elif user.is_authenticated %}
+    <form method="post" action="{% url 'follow_toggle' u.username %}">{% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <button class="btn small {% if is_following %}ghost{% endif %}">{% if is_following %}Unfollow{% else %}Follow{% endif %}</button></form>
+  {% endif %}
+  </div>
+</section>
+{% for p in posts %}{% include "network/_post.html" %}{% empty %}<p class="muted">No posts yet.</p>{% endfor %}
+{% endblock %}

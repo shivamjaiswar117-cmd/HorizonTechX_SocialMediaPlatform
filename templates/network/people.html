@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}People · Loop{% endblock %}
+{% block content %}
+<h1>People</h1>
+{% for x in users %}
+<div class="comment">{% include "network/_avatar.html" with u=x %}
+  <div><a class="who" href="{% url 'profile' x.username %}">@{{ x.username }}</a><p class="muted">{{ x.profile.bio }}</p></div>
+  {% if user.is_authenticated %}
+  <form method="post" action="{% url 'follow_toggle' x.username %}" class="push">{% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+    <button class="btn small {% if x.is_followed %}ghost{% endif %}">{% if x.is_followed %}Unfollow{% else %}Follow{% endif %}</button></form>
+  {% endif %}
+</div>
+{% empty %}<p class="muted">No other users yet.</p>{% endfor %}
+{% endblock %}

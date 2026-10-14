@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+<form method="post" action="{% url 'post_create' %}" class="composer">{% csrf_token %}
+  <textarea name="content" maxlength="280" rows="2" placeholder="What's happening?" required></textarea>
+  <div class="row"><span class="muted count">280</span><button class="btn">Post</button></div>
+</form>
+<div class="tabs">
+  <a class="chip {% if feed != 'all' %}on{% endif %}" href="?feed=following">Following</a>
+  <a class="chip {% if feed == 'all' %}on{% endif %}" href="?feed=all">Everyone</a>
+</div>
+{% else %}
+<div class="hero"><h1>Say it. Loop it.</h1><p>Join, post, comment, like and follow people.</p>
+<a class="btn" href="{% url 'register' %}">Create account</a></div>
+{% endif %}
+{% for p in posts %}{% include "network/_post.html" %}
+{% empty %}<p class="muted">Nothing here yet. Post something, or <a href="{% url 'people' %}">follow people</a>.</p>{% endfor %}
+{% endblock %}
